@@ -1,0 +1,46 @@
+graph TD
+    Client(["💻 Web Browser / Mobile Browser"])
+
+    subgraph FE ["⚛️ Frontend Layer — Next.js / React"]
+        direction LR
+        UI["🎨 UI Components\nPages & Layout"]
+        State["🔄 State Management\nRedux / Context API"]
+    end
+
+    Gateway["🔀 API Gateway\nRouting & Middleware"]
+
+    subgraph BE ["🖥️ Backend Services — Node.js + Express"]
+        direction TB
+        Auth["🔐 Auth Controller\nJWT Security"]
+        Product["📦 Product & Review API"]
+        Order["🛒 Order & Cart API"]
+        Promo["🎁 Coupon / Promo API"]
+    end
+
+    subgraph DB ["🗄️ Database Layer — PostgreSQL"]
+        direction LR
+        Users[("👤 Users")]
+        Products[("📦 Products")]
+        Orders[("📋 Orders")]
+        Coupons[("🎁 Coupons")]
+    end
+
+    Client -->|"HTTPS Request"| FE
+    FE -->|"REST API Call"| Gateway
+
+    Gateway --> Auth
+    Gateway --> Product
+    Gateway --> Order
+    Gateway --> Promo
+
+    Auth --> Users
+    Product --> Products
+    Order --> Orders
+    Order --> Products
+    Promo --> Coupons
+
+    style FE fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a
+    style BE fill:#dcfce7,stroke:#22c55e,color:#14532d
+    style DB fill:#fef9c3,stroke:#eab308,color:#713f12
+    style Client fill:#f1f5f9,stroke:#94a3b8,color:#334155
+    style Gateway fill:#ede9fe,stroke:#8b5cf6,color:#3b0764

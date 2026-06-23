@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniCart - System Analysis & Design Specification</title>
+    <!-- Marked.js for parsing Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Mermaid.js for parsing diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #f8fafc;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #3b82f6;
+            --bg-color: #f1f5f9;
+            --text-color: #334155;
+            --content-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid #334155;
+            text-align: center;
+        }
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .nav-list li {
+            border-bottom: 1px solid #1e293b;
+        }
+        .nav-list a {
+            display: block;
+            padding: 15px 20px;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            border-left: 4px solid transparent;
+        }
+        .nav-list a:hover, .nav-list a.active {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+            border-left: 4px solid var(--sidebar-active);
+            padding-left: 25px;
+        }
+
+        /* Main Content Styling */
+        .main-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        .main-content {
+            padding: 50px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .content-container {
+            background-color: var(--content-bg);
+            padding: 50px 70px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            line-height: 1.7;
+        }
+
+        /* Markdown Elements */
+        #content h1, #content h2, #content h3, #content h4 {
+            color: #0f172a;
+            margin-top: 1.8em;
+            margin-bottom: 0.8em;
+            scroll-margin-top: 40px; /* Offset for smooth scrolling */
+        }
+        #content h1 {
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            font-size: 2.2em;
+            text-align: center;
+        }
+        #content h2 {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            color: var(--primary-color);
+        }
+        #content a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        #content a:hover {
+            text-decoration: underline;
+        }
+        #content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px var(--border-color);
+        }
+        #content th, #content td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #content th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        #content tr:last-child td {
+            border-bottom: none;
+        }
+        #content code {
+            background-color: #f1f5f9;
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            color: #e11d48;
+            font-size: 0.9em;
+        }
+        #content pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        #content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+        #content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        #content blockquote {
+            border-left: 5px solid var(--primary-color);
+            margin: 20px 0;
+            padding: 15px 20px;
+            background-color: #f8fafc;
+            color: #475569;
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        #content details {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        #content summary {
+            font-weight: 600;
+            cursor: pointer;
+            color: #0f172a;
+        }
+        #content details ul {
+            margin-top: 15px;
+            margin-bottom: 0;
+        }
+        .mermaid {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Badges Alignment */
+        div[align="center"] {
+            text-align: center;
+        }
+        p[align="center"] img {
+            margin: 0 5px;
+        }
+
+        /* Loading Spinner */
+        #loading {
+            text-align: center;
+            font-size: 18px;
+            padding: 50px;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; max-height: 300px; }
+            .main-content { padding: 20px; }
+            .content-container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>📑 สารบัญเอกสาร</h2>
+        </div>
+        <ul class="nav-list" id="nav-list">
+            <!-- Sidebar links will be injected here by JS -->
+        </ul>
+    </aside>
+
+    <main class="main-wrapper" id="main-scroll">
+        <div class="main-content">
+            <div class="content-container">
+                <div id="loading">⏳ กำลังสร้างหน้าเอกสาร...</div>
+                <div id="content" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- RAW MARKDOWN CONTENT -->
+    <!-- ========================================== -->
+    <script type="text/markdown" id="markdown-source">
+<div align="center">
+
+# 🛒 OmniCart - E-Commerce Platform
+**System Analysis & Design Specification (SADS)**
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
+</p>
+
+*เอกสารฉบับนี้จัดทำขึ้นเพื่อใช้ประกอบโปรเจกต์ในรายวิชา DIGITAL PLATFORM FOR SOFTWARE DEVELOPMENT*
+
+</div>
+
+---
+
+## 1. ภาพรวมโครงการและวัตถุประสงค์ (Executive Summary)
+
+**OmniCart** เป็นแพลตฟอร์มพาณิชย์อิเล็กทรอนิกส์ (E-Commerce Platform) แบบครบวงจร ที่มุ่งเน้นการมอบประสบการณ์การซื้อขายที่รวดเร็ว ปลอดภัย และใช้งานง่าย โดยครอบคลุมตั้งแต่กระบวนการค้นหาสินค้าไปจนถึงการชำระเงินและติดตามสถานะการจัดส่ง 
+
+**วัตถุประสงค์:**
+
+- เพื่อพัฒนาระบบร้านค้าออนไลน์ที่รองรับการใช้งานที่ครอบคลุมการซื้อขายจริง
+- เพื่อศึกษาและประยุกต์ใช้เทคโนโลยีสมัยใหม่ในการพัฒนาซอฟต์แวร์ ได้แก่ Frontend (Next.js/React), Backend (Node.js/Express) และฐานข้อมูล Relational Database
+- เพื่อเรียนรู้กระบวนการทำงานเป็นทีมด้วย Git และระบบ CI/CD (GitHub Actions)
+
+## 2. ขอบเขตและเป้าหมายทางธุรกิจ (Project Scope & Business Goals)
+
+### 🎯 เป้าหมาย (Business Goals)
+
+1. อำนวยความสะดวกให้ลูกค้าสามารถสั่งซื้อสินค้าได้ตลอด 24 ชั่วโมง พร้อมระบบติดตามสถานะ
+2. มีระบบจัดการหลังบ้าน (Back-Office) ที่ช่วยให้ผู้ดูแลระบบควบคุมสินค้าและคำสั่งซื้อได้ง่าย
+3. นำเสนอระบบรีวิวสินค้าและคูปองส่วนลดเพื่อกระตุ้นยอดขาย
+
+### 📌 ขอบเขตระบบ (System Boundaries)
+
+- **ผู้ใช้งานทั่วไป/ลูกค้า (Customer):** ค้นหาสินค้า, กรองสินค้า, เพิ่มลงตะกร้า, ชำระเงิน, ติดตามสถานะ, รีวิวสินค้า และใช้คูปองส่วนลด
+- **ผู้ดูแลระบบ (Admin):** จัดการข้อมูลสินค้า, จัดการหมวดหมู่, จัดการสถานะคำสั่งซื้อ, และสร้างคูปองส่วนลด
+
+## 3. สถาปัตยกรรมของระบบ (System Architecture Design)
+
+ระบบใช้สถาปัตยกรรมแบบ **Client-Server Architecture** โดยแยกส่วน Frontend และ Backend เพื่อให้ง่ายต่อการดูแลและพัฒนาต่อยอด (Separation of Concerns)
+
+<p align="center"><i>[ 🖼️ แทรกรูปภาพ System Architecture ที่นี่ ]</i></p>
+
+## 4. ความต้องการเชิงฟังก์ชัน (Functional Requirements)
+
+ความต้องการเชิงฟังก์ชันที่ระบบสามารถทำได้ แบ่งออกเป็น 2 ส่วนหลักๆ ดังนี้:
+
+<details open>
+<summary><b>👤 4.1 ระบบหน้าเว็บสำหรับลูกค้า (Customer Frontend)</b></summary>
+
+| รหัส | ฟังก์ชัน | รายละเอียด | ความสำคัญ |
+| :--- | :--- | :--- | :--- |
+| **C-01** | การจัดการบัญชี | สมัครสมาชิก, เข้าสู่ระบบ, ออกจากระบบ, แก้ไขข้อมูลส่วนตัว | High |
+| **C-02** | การเลือกซื้อสินค้า | ค้นหาสินค้าจากชื่อ (Search), กรองสินค้าตามหมวดหมู่ (Filter) | High |
+| **C-03** | ระบบตะกร้าสินค้า | เพิ่มสินค้าลงตะกร้า, ลด/เพิ่มจำนวน, ลบสินค้า, คำนวณราคารวมอัตโนมัติ | High |
+| **C-04** | ระบบสั่งซื้อ | กรอกที่อยู่จัดส่ง, ยืนยันคำสั่งซื้อ (Checkout Process) | High |
+| **C-05** | ระบบหลังการขาย | ดูประวัติการสั่งซื้อย้อนหลัง, ติดตามสถานะคำสั่งซื้อ (Order Tracking) | Medium |
+| **C-06** | ระบบเสริม | สามารถใช้คูปองส่วนลด (Coupon) และรีวิวให้คะแนนสินค้าได้ (Review & Rating) | Medium |
+
+</details>
+
+<details open>
+<summary><b>🛠️ 4.2 ระบบหลังบ้าน (Admin Dashboard)</b></summary>
+
+| รหัส | ฟังก์ชัน | รายละเอียด | ความสำคัญ |
+| :--- | :--- | :--- | :--- |
+| **A-01** | การจัดการสินค้า | เพิ่มสินค้าใหม่, แก้ไขข้อมูล (รูปภาพ/ราคา/รายละเอียด), ลบสินค้า, ตัดสต๊อก | High |
+| **A-02** | การจัดการคำสั่งซื้อ | ดูรายการสั่งซื้อทั้งหมด และอัปเดตสถานะ (รอดำเนินการ -> กำลังจัดส่ง -> สำเร็จ) | High |
+| **A-03** | การจัดการโปรโมชั่น | สร้างโค้ดส่วนลด (Coupon Code), กำหนดมูลค่าที่ลด, กำหนดวันหมดอายุ | Medium |
+
+</details>
+
+## 5. ความต้องการเชิงคุณลักษณะ (Non-Functional Requirements)
+
+- **Performance:** หน้าเว็บควรโหลดได้อย่างรวดเร็ว ไม่กระตุก และ API มีความเร็วในการตอบสนอง
+- **Security:** 
+  - รหัสผ่านของผู้ใช้ต้องถูกเข้ารหัส (Hashing) ก่อนบันทึกลง Database
+  - มีการยืนยันตัวตนการเข้าถึง API ด้วย JWT (JSON Web Token)
+  - Admin เท่านั้นที่สามารถเข้าถึง Endpoint ของระบบหลังบ้านได้
+- **Usability:** รูปแบบ UI/UX ใช้งานง่าย สะอาดตา และเป็น Responsive Design รองรับการแสดงผลบนหน้าจอมือถือ
+- **Availability:** ทำงานบนเครื่อง Local ได้อย่างเสถียร หรือหาก Deploy ต้องทำงานได้ตลอด 24 ชั่วโมง
+
+## 6. การออกแบบโครงสร้างข้อมูล (Database & Data Model)
+
+เพื่อให้เข้าใจความสัมพันธ์ของข้อมูล จึงได้ออกแบบ Entity Relationship (ERD) เบื้องต้น ดังนี้:
+
+<p align="center"><i>[ 🖼️ แทรกรูปภาพ Database ERD ที่นี่ ]</i></p>
+
+## 7. แนวทางการทำงานร่วมกัน (Team Collaboration & Version Control)
+
+ทีมใช้ **Git / GitHub** ในการจัดการ Source Code โดยประยุกต์ใช้หลักการ **Git Flow** เพื่อลดความขัดแย้งของโค้ด:
+
+1. **Branching Strategy:**
+   - `main`: เก็บซอร์สโค้ดที่เสถียรที่สุด พร้อมสำหรับการรันนำเสนอ
+   - `develop`: กิ่งหลักสำหรับการรวมงานใหม่ๆ ที่กำลังพัฒนา
+   - `feature/*`: สำหรับพัฒนาแต่ละฟีเจอร์แยกกัน เช่น `feature/auth`, `feature/cart`
+2. **Commit Convention:**
+   - ใช้รูปแบบชัดเจน เช่น `feat: add order tracking`, `fix: resolve cart calculation bug`
+3. **Pull Requests (PR):**
+   - การนำโค้ดจาก `feature` เข้าสู่ `develop` ต้องทำผ่าน Pull Request 
+
+## 8. กระบวนการส่งมอบซอฟต์แวร์ (CI/CD & DevOps Pipeline)
+
+นำเทคโนโลยี **GitHub Actions** มาใช้ในการสร้าง Pipeline พื้นฐาน:
+
+<p align="center"><i>[ 🖼️ แทรกรูปภาพ CI/CD Pipeline ที่นี่ ]</i></p>
+
+- **Continuous Integration (CI):** ทุกครั้งที่มีการอัปเดตโค้ด ระบบจะตรวจเช็ค Syntax และรูปแบบโค้ด (Linter) 
+- **Database & Environment:** ใช้ Local Database (`.env` configuration) เพื่อความสะดวกรวดเร็วในการพัฒนาระดับการศึกษา
+
+## 9. แผนการดำเนินงาน (Project Timeline & Milestones)
+
+| Milestone | รายละเอียด |
+| :--- | :--- |
+| **Phase 1: Design** | ออกแบบ UI/UX, System Architecture และ Database (ERD) |
+| **Phase 2: Core Dev** | เริ่มสร้าง Project Structure, พัฒนา API Login/Register และหน้าจัดการสินค้า (Admin) |
+| **Phase 3: Shopping** | พัฒนาระบบค้นหาสินค้า, ระบบตะกร้า (Cart), และการสั่งซื้อ (Checkout) |
+| **Phase 4: Tracking & Extras** | ทำระบบติดตามสถานะ, รีวิวสินค้า, และระบบคูปองส่วนลด |
+| **Phase 5: Integration** | รวมโค้ด Frontend/Backend, ตั้งค่า GitHub Actions, ทดสอบการทำงานทั้งหมด |
+| **Phase 6: Delivery** | เตรียมสไลด์นำเสนอโปรเจกต์ และเตรียมความพร้อมสำหรับ Demo รันผ่าน Local DB |
+
+## 10. การจัดการความเสี่ยง (Risk Management)
+
+| ความเสี่ยง (Risks) | ผลกระทบ | แผนการจัดการรองรับ (Mitigation Plan) |
+| :--- | :---: | :--- |
+| **งานเสร็จไม่ทันตามกำหนด (Schedule)** | สูง | ทยอยพัฒนาตามความสำคัญ (Core Features ก่อน) เพื่อให้ระบบหลักทำงานได้ |
+| **Merge Conflict รุนแรง** | ปานกลาง | ทีมสื่อสารกันก่อนแก้ไขไฟล์ร่วม (เช่น ไฟล์ `App.js` หรือไฟล์ Database Config) |
+| **Local Database ใช้งานบนเครื่องอื่นไม่ได้** | สูง | จัดทำสคริปต์ Database Seeders เพื่อให้เพื่อนร่วมทีมดึงข้อมูลจำลองไปรันได้ทันที |
+
+---
+
+<div align="center">
+<i>&copy; 2026 E-Commerce Development Team. <br> Document version 1.0 (Draft)</i>
+</div>
+    </script>
+
+    <!-- ========================================== -->
+    <!-- PARSER & RENDERER SCRIPT -->
+    <!-- ========================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mdSource = document.getElementById('markdown-source').textContent;
+            const contentDiv = document.getElementById('content');
+            const loadingDiv = document.getElementById('loading');
+            const navList = document.getElementById('nav-list');
+            const mainScroll = document.getElementById('main-scroll');
+
+            // 1. Configure Marked
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+
+            // Handle Mermaid in marked
+            const renderer = new marked.Renderer();
+            const originalCode = renderer.code.bind(renderer);
+            renderer.code = function(code, language, isEscaped) {
+                if (language === 'mermaid') {
+                    return `<div class="mermaid">${code}</div>`;
+                }
+                return originalCode(code, language, isEscaped);
+            };
+            marked.use({ renderer });
+
+            // 2. Parse Markdown to HTML
+            contentDiv.innerHTML = marked.parse(mdSource);
+
+            // 3. Generate Dynamic Sidebar from H2 tags
+            const headings = contentDiv.querySelectorAll('h2');
+            headings.forEach((heading, index) => {
+                const id = 'heading-' + index;
+                heading.id = id;
+
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#' + id;
+                a.textContent = heading.textContent.replace(/^[0-9]+\.\s*/, ''); // Remove numbering in sidebar
+                
+                // Click event for smooth scroll
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    mainScroll.scrollTo({
+                        top: heading.offsetTop - 50,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active state manually on click
+                    document.querySelectorAll('.nav-list a').forEach(el => el.classList.remove('active'));
+                    a.classList.add('active');
+                });
+
+                li.appendChild(a);
+                navList.appendChild(li);
+            });
+
+            // Highlight active sidebar item on scroll
+            mainScroll.addEventListener('scroll', () => {
+                let current = '';
+                headings.forEach(heading => {
+                    if (mainScroll.scrollTop >= heading.offsetTop - 100) {
+                        current = heading.id;
+                    }
+                });
+                
+                document.querySelectorAll('.nav-list a').forEach(a => {
+                    a.classList.remove('active');
+                    if (a.getAttribute('href') === '#' + current) {
+                        a.classList.add('active');
+                    }
+                });
+            });
+
+            // 4. Initialize Mermaid
+            if (typeof mermaid !== 'undefined') {
+                mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+            }
+
+            // Show Content
+            loadingDiv.style.display = 'none';
+            contentDiv.style.display = 'block';
+            
+            // Set first item as active
+            if (document.querySelector('.nav-list a')) {
+                document.querySelector('.nav-list a').classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
