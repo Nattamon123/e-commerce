@@ -1,4 +1,4 @@
-# 🛒 OmniCart - E-Commerce Platform
+# OmniCart - E-Commerce Platform
 
 **System Analysis & Design Specification (SADS)**
 
@@ -12,7 +12,7 @@
 
 ---
 
-## 📑 สารบัญ (Table of Contents)
+## สารบัญ (Table of Contents)
 
 1. [ภาพรวมโครงการและวัตถุประสงค์ (Executive Summary)](#1-ภาพรวมโครงการและวัตถุประสงค์-executive-summary)
 2. [ขอบเขตและเป้าหมายทางธุรกิจ (Project Scope & Business Goals)](#2-ขอบเขตและเป้าหมายทางธุรกิจ-project-scope--business-goals)
@@ -56,7 +56,7 @@
 
 ```mermaid
 graph TD
-    Client([💻 Web Browser / Mobile View]) -->|HTTPS / REST API| Gateway[API Gateway / Routing]
+    Client([Web Browser / Mobile View]) -->|HTTPS / REST API| Gateway[API Gateway / Routing]
 
     subgraph Frontend [Frontend Layer - Next.js / React]
         UI[User Interface Components]
@@ -72,7 +72,7 @@ graph TD
     end
 
     subgraph Database [Database Layer - Local]
-        DB[(🗄️ Relational Database<br/>PostgreSQL/MySQL)]
+        DB[(Relational Database<br/>PostgreSQL/MySQL)]
     end
 
     Auth --> DB

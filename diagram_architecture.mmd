@@ -1,28 +1,28 @@
 graph TD
-    Client(["💻 Web Browser / Mobile Browser"])
+    Client(["Web Browser / Mobile Browser"])
 
-    subgraph FE ["⚛️ Frontend Layer — Next.js / React"]
+    subgraph FE ["Frontend Layer — Next.js / React"]
         direction LR
-        UI["🎨 UI Components\nPages & Layout"]
-        State["🔄 State Management\nRedux / Context API"]
+        UI["UI Components\nPages & Layout"]
+        State["State Management\nRedux / Context API"]
     end
 
-    Gateway["🔀 API Gateway\nRouting & Middleware"]
+    Gateway["API Gateway\nRouting & Middleware"]
 
-    subgraph BE ["🖥️ Backend Services — Node.js + Express"]
+    subgraph BE ["Backend Services — Node.js + Express"]
         direction TB
-        Auth["🔐 Auth Controller\nJWT Security"]
-        Product["📦 Product & Review API"]
-        Order["🛒 Order & Cart API"]
-        Promo["🎁 Coupon / Promo API"]
+        Auth["Auth Controller\nJWT Security"]
+        Product["Product & Review API"]
+        Order["Order & Cart API"]
+        Promo["Coupon / Promo API"]
     end
 
-    subgraph DB ["🗄️ Database Layer — PostgreSQL"]
+    subgraph DB ["Database Layer — PostgreSQL"]
         direction LR
-        Users[("👤 Users")]
-        Products[("📦 Products")]
-        Orders[("📋 Orders")]
-        Coupons[("🎁 Coupons")]
+        Users[("Users")]
+        Products[("Products")]
+        Orders[("Orders")]
+        Coupons[("Coupons")]
     end
 
     Client -->|"HTTPS Request"| FE
